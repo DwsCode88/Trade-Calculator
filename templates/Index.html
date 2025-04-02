@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Trading Card Offers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-image: url('https://wallpaperaccess.com/full/185116.jpg'); /* Pokémon card background */
+            background-size: cover;
+            color: white;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            display: inline-block;
+            margin-top: 50px;
+            width: 80%;
+        }
+        h1 {
+            color: #ffcc00;
+            font-size: 2em;
+            text-shadow: 3px 3px 5px black;
+        }
+        input {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #cc0000;
+        }
+        .offers {
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .offer-item {
+            padding: 10px;
+            border-bottom: 1px solid white;
+        }
+        .offer-status {
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        .offer-buttons {
+            margin-top: 10px;
+        }
+        .accepted {
+            color: #00ff00;
+        }
+        .denied {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pokémon Trading Card Offers</h1>
+        <p>Enter the card's name and price to calculate offers!</p>
+        <form method="POST">
+            <label for="card_name">Card Name:</label>
+            <input type="text" id="card_name" name="card_name" required>
+            <br><br>
+            <label for="price">Card Price ($):</label>
+            <input type="text" id="price" name="price" required>
+            <button type="submit">Calculate Offers</button>
+        </form>
+
+        <h2>Offers List</h2>
+        <div class="offers">
+            {% for offer in offers %}
+                <div class="offer-item">
+                    <p><strong>Card Name:</strong> {{ offer.card_name }}</p>
+                    <p><strong>Card Price:</strong> ${{ offer.price }}</p>
+                    <p>🔥 <strong>Cash Offer:</strong> ${{ offer.cash_offer }} (60%)</p>
+                    <p>⚡ <strong>Trade Offer:</strong> ${{ offer.trade_offer }} (70%)</p>
+                    <p class="offer-status">Status: 
+                        <span class="{% if offer.status == 'Accepted' %}accepted{% elif offer.status == 'Denied' %}denied{% endif %}">
+                            {{ offer.status }}
+                        </span>
+                    </p>
+                    {% if offer.status == 'Pending' %}
+                        <div class="offer-buttons">
+                            <a href="{{ url_for('accept_offer', offer_type='cash', offer_id=offer.id) }}">
+                                <button style="background: green;">Accept Cash</button>
+                            </a>
+                            <a href="{{ url_for('accept_offer', offer_type='trade', offer_id=offer.id) }}">
+                                <button style="background: blue;">Accept Trade</button>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('clear_all') }}">
+            <button style="background: #ffa500;">Clear All Offers</button>
+        </a>
+    </div>
+</body>
+</html>

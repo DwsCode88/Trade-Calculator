@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accepted Trades and Profits</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-image: url('https://wallpaperaccess.com/full/185116.jpg'); /* Pokémon card background */
+            background-size: cover;
+            color: white;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            display: inline-block;
+            margin-top: 50px;
+            width: 80%;
+        }
+        h1 {
+            color: #ffcc00;
+            font-size: 2em;
+            text-shadow: 3px 3px 5px black;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid white;
+        }
+        th {
+            background-color: #ffcc00;
+            color: black;
+        }
+        td {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .total {
+            font-size: 1.5em;
+            color: #ffcc00;
+            margin-top: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Accepted Trades</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Card Name</th>
+                    <th>Original Price ($)</th>
+                    <th>Accepted Offer Type</th>
+                    <th>Accepted Offer ($)</th>
+                    <th>Profit ($)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for offer in offers %}
+                    <tr>
+                        <td>{{ offer.card_name }}</td>
+                        <td>${{ offer.price }}</td>
+                        <td>{{ offer.accepted_type }}</td>
+                        <td>
+                            {% if offer.accepted_type == 'Cash' %}
+                                ${{ offer.cash_offer }}
+                            {% elif offer.accepted_type == 'Trade' %}
+                                ${{ offer.trade_offer }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if offer.accepted_type == 'Cash' %}
+                                ${{ offer.price - offer.cash_offer if offer.price > offer.cash_offer else 0 }}
+                            {% elif offer.accepted_type == 'Trade' %}
+                                ${{ offer.price - offer.trade_offer if offer.price > offer.trade_offer else 0 }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="total">
+            <p><strong>Total Original Price:</strong> ${{ total_original_price }}</p>
+            <p><strong>Total Profit:</strong> ${{ total_profit }}</p>
+        </div>
+
+        <a href="{{ url_for('index') }}">
+            <button class="button">Back to Offers</button>
+        </a>
+    </div>
+</body>
+</html>
